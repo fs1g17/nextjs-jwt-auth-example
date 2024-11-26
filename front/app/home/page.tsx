@@ -4,11 +4,12 @@ import { redirect } from "next/navigation";
 async function fetchUsernameFromJwt(): Promise<string> {
   const [result, error] = await ssrFetch<{
     message: string;
-    username?: string;
+    username: string;
   }>("/ready", { method: "GET" });
   if (error !== null || result?.username === undefined) {
-    redirect("/sign-in");
+    throw new Error("Failed to get /ready");
   }
+
   return result.username;
 }
 

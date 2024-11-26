@@ -29,7 +29,7 @@ export async function ssrFetch<O, I = undefined>(
     return [null, error as Error];
   }
 
-  if (response.status === 401) {
+  if (response.status === 403) {
     redirect("/sign-in");
   }
 
