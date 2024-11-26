@@ -18,11 +18,6 @@ async function validateJWT(jwt: string | undefined) {
     });
     return true;
   } catch (error) {
-    const err = error as AxiosError;
-    if (err.response?.status === 401) {
-      console.log("JWT validation failed", err);
-    }
-    // TODO: handle other errors here, e.g. 500
     return false;
   }
 }
