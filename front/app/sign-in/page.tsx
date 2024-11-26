@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -10,7 +10,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useRef, useState } from "react";
@@ -20,19 +19,10 @@ import { Button } from "@/components/ui/button";
 import clientFetch from "@/lib/client-side-fetching";
 import { useRouter } from "next/navigation";
 
-const schema = z
-  .object({
-    username: z.string().trim().min(1, { message: "input a username" }),
-    password: z.string().trim().min(1, { message: "input a password" }),
-    confirmPassword: z
-      .string()
-      .trim()
-      .min(1, { message: "input password confirmation" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "passwords must match",
-    path: ["confirmPassword"],
-  });
+const schema = z.object({
+  username: z.string().trim().min(1, { message: "input a username" }),
+  password: z.string().trim().min(1, { message: "input a password" }),
+});
 
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
@@ -42,16 +32,15 @@ export default function SignUp() {
     defaultValues: {
       username: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const callSignup = async (data: { username: string; password: string }) => {
+  const callSignin = async (data: { username: string; password: string }) => {
     try {
-      await clientFetch.post("/api/sign-up", data);
-      router.push("/sign-in");
+      await clientFetch.post("/api/sign-in", data);
+      router.push("/home");
     } catch (error) {
       const err = error as AxiosError;
       const data = err.response?.data as { message: string };
@@ -62,7 +51,7 @@ export default function SignUp() {
   return (
     <div className="h-full flex">
       <div className="flex-1 h-full flex flex-col justify-center items-center p-4">
-        <h1>Sign Up</h1>
+        <h1>Sign In</h1>
         <Form {...form}>
           <form
             ref={formRef}
@@ -75,7 +64,7 @@ export default function SignUp() {
                   username: formData.get("username") as string,
                   password: formData.get("password") as string,
                 };
-                callSignup(data);
+                callSignin(data);
               })(evt);
             }}
           >
@@ -105,23 +94,10 @@ export default function SignUp() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <Label className="text-sm">Confirm Password</Label>
-                  <FormControl>
-                    <Input placeholder="confirm password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+            
             {error !== null && <p className="text-destructive">{error}</p>}
 
-            <Button type="submit">Create account</Button>
+            <Button type="submit">Sign in</Button>
           </form>
         </Form>
       </div>

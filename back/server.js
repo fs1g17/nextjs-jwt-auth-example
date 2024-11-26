@@ -72,7 +72,7 @@ app.get("/ready", (req, res) => {
     return;
   }
 
-  res.send({ message: "success" });
+  res.send({ message: "success", username: decoded.username });
 });
 
 app.listen(port, () => {
